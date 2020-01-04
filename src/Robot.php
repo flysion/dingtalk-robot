@@ -77,7 +77,7 @@ class Robot
     /**
      * @link https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq
      * @param $message
-     * @param true|array $at
+     * @param true|array|string $at
      * @throws \GuzzleHttp\Exception\GuzzleException|Exception
      * @return array
      */
@@ -92,7 +92,11 @@ class Robot
 
         if($at === true) {
             $message['at']['isAtAll'] = true;
-        } elseif (count($at) > 0) {
+        } elseif (is_string($at)) {
+            $at = array_filter(explode(',', $at));
+        }
+
+        if (is_array($at) && count($at) > 0) {
             $message['at']['atMobiles'] = $at;
         }
 
