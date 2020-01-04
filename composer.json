@@ -1,0 +1,35 @@
+{
+    "name": "lee2son/dingtalk-robot",
+    "description": "钉钉发消息机器人",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lixx",
+            "email": "sss60@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "illuminate/support": "*",
+        "guzzlehttp/guzzle": "^6.4"
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Lee2son\\DingTalkRobot\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lee2son\\DingTalkRobot\\ServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    }
+}
