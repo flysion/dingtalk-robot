@@ -22,8 +22,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/dingtalk_robot.php', 'dingtalk_robot');
 
         $this->publishes([
-            __DIR__ . '/../config/dingtalk_robot.php' => $this->app->config_path('dingtalk_robot.php')
-        ], 'dingtalk_robot');
+            __DIR__ . '/../config/dingtalk_robot.php' => $this->app->configPath('dingtalk_robot.php')
+        ], 'dingtalk-robot');
 
         $this->initApi();
     }
@@ -33,7 +33,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function initApi()
     {
-        $config = $this->app->config('dingtalk_robot');
+        $config = $this->app['config']->get('dingtalk_robot');
 
         Robot::$default = $config['default'];
         Robot::$robots = $config['robots'];
