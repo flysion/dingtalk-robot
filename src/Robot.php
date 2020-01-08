@@ -100,8 +100,8 @@ class Robot
             $message['at']['atMobiles'] = $at;
         }
 
-        $response = $this->getClient()->post($webhook, array_merge($this->config['options'], [
-            'josn' => $message,
+        $response = $this->getClient()->post($webhook, array_merge($this->config['options'] ?? [], [
+            'json' => $message,
             'headers' => [
                 'Content-Type' => 'application/json'
             ]
