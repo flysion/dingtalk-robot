@@ -54,13 +54,12 @@ class Robot
         }
 
         if(!isset(static::$instances[$name])) {
-            $config = static::$robots[$name];
             static::$instances[$name] = new static(static::$robots[$name]);
         }
 
         return static::$instances[$name];
     }
-    
+
     /**
      * 获取请求客户端
      * @return ClientInterface
