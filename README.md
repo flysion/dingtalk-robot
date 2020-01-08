@@ -32,7 +32,7 @@ Laravel 框架的钉钉机器人发消息插件
     
     php artisan vendor:publish --tag=dingtalk-robot
     
-此时会生成`config/anfeng_pass.php`，酌情修改
+此时会生成`config/dingtalk_robot.php`，酌情修改
         
 调用方式：
 
