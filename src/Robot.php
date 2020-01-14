@@ -4,19 +4,10 @@ namespace Lee2son\DingTalkRobot;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\TransferStats;
 
 class Robot
 {
-    /**
-     * @var array 机器人配置
-     */
-    protected $config = [];
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
     /**
      * @var array 记录所有的应用配置
      */
@@ -28,9 +19,24 @@ class Robot
     public static $default = 'default';
 
     /**
+     * @var null|callable $callback 每次请求完成后的回调
+     */
+    public static $callback = null;
+
+    /**
      * @var Robot[]
      */
     protected static $instances = [];
+
+    /**
+     * @var array 机器人配置
+     */
+    protected $config = [];
+
+    /**
+     * @var ClientInterface
+     */
+    protected $client;
 
     /**
      * Robot constructor.
@@ -74,6 +80,32 @@ class Robot
     }
 
     /**
+     * on stats event
+     *
+     * @param TransferStats $stats
+     * @param array $options request options
+     */
+    public function onStats(TransferStats $stats, $options)
+    {
+        if(static::$callback) {
+            $message = sprintf("robot.%s -> %s %s %.04fs", $this->config['name'], $stats->getRequest()->getMethod(), $stats->getEffectiveUri(), $stats->getTransferTime());
+            $data = [
+                'request' => $options,
+            ];
+
+            if ($stats->hasResponse()) {
+                $data['response'] = strval($stats->getResponse()->getBody());
+                $message .= ' -> ' . $stats->getResponse()->getStatusCode();
+            } else {
+                $data['error'] = $stats->getHandlerErrorData();
+                $message .= ' -> 0';
+            }
+
+            call_user_func(static::$callback, $stats, $options, $this->config['name'], $this->config, $data, $message);
+        }
+    }
+
+    /**
      * @link https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq
      * @param $message
      * @param true|array|string $at
@@ -99,12 +131,18 @@ class Robot
             $message['at']['atMobiles'] = $at;
         }
 
-        $response = $this->getClient()->post($webhook, array_merge($this->config['options'] ?? [], [
+        $options = array_merge($this->config['options'] ?? [], [
             'json' => $message,
             'headers' => [
                 'Content-Type' => 'application/json'
             ]
-        ]));
+        ]);
+
+        $options['on_stats'] = function(TransferStats $stats) use($options) {
+            call_user_func([$this, 'onStats'], $stats, $options);
+        };
+
+        $response = $this->getClient()->post($webhook, $options);
 
         $data = \GuzzleHttp\json_decode($response->getBody(), true);
         if($data['errcode'] !== 0) {

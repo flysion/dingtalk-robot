@@ -2,3 +2,4 @@ push.sh
 .idea/
 vendor/
 composer.lock
+test.php

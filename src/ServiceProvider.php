@@ -37,5 +37,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         Robot::$default = $config['default'];
         Robot::$robots = $config['robots'];
+        Robot::$callback = function (\GuzzleHttp\TransferStats $stats, $options, $name, array $config, $logData, $logMessage) {
+            $logOptions = $config['log'] ?? null;
+            if($logOptions && $logOptions['enable']) {
+                if($stats->hasResponse()) {
+                    \Illuminate\Support\Facades\Log::channel($logOptions['channel'])->info($logMessage, $logData);
+                } else {
+                    \Illuminate\Support\Facades\Log::channel($logOptions['channel'])->error($logMessage, $logData);
+                }
+            }
+        };
     }
 }
