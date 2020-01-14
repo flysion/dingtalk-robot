@@ -60,7 +60,7 @@ class Robot
         }
 
         if(!isset(static::$instances[$name])) {
-            static::$instances[$name] = new static(static::$robots[$name]);
+            static::$instances[$name] = new static(array_merge(['name' => $name], static::$robots[$name]));
         }
 
         return static::$instances[$name];
