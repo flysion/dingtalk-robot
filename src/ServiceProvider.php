@@ -2,7 +2,9 @@
 
 namespace Lee2son\DingTalkRobot;
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider
+use Illuminate\Contracts\Support\DeferrableProvider;
+
+class ServiceProvider extends \Illuminate\Support\ServiceProvider implements DeferrableProvider
 {
     /**
      * Bootstrap any application services.
@@ -47,5 +49,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 }
             }
         };
+
+        $this->app->bind('dingtalk.robot', function($app, $parameters = []) {
+            return Robot::instance(...$parameters);
+        });
     }
 }

@@ -51,4 +51,4 @@ Laravel 框架的钉钉机器人发消息插件
     
 此时会生成`config/dingtalk_robot.php`，酌情修改。调用方式是一样的
 
-    \Lee2son\DingTalkRobot\robot('example')->xxxxxxxxx();
+    app('dingtalk.robot', 'example')->xxxxxxxxx();
